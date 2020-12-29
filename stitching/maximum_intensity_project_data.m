@@ -24,7 +24,7 @@ end
 disp(['Total Amount of Parallel Processes for GMIC = ' num2str(total_parallelization)]);
 
 % Install the GMIC Scripts
-installGMIC();
+matlab_install_gmic();
 
 % Iterate through each Channel
 for channel_idx = 1:1:number_of_channels
