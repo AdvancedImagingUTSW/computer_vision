@@ -1,6 +1,9 @@
-#! /bin/bash
+#!/bin/bash
 # A program intended to adjust MIL permissions and ownership.
 # Access to folders is restricted by the stfacl -m command.
+
+# Load the Parallel Module
+module load parallel/20150122
 
 # Go into the MIL Directory
 cd /archive/MIL/;
