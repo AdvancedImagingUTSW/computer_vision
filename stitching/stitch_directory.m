@@ -50,8 +50,7 @@ elseif isunix
         
         %% Clean Up the Directory
         cleanup_stitching_directory(data_directory, number_of_positions);
-      
-        
+              
         %% Calculate DCTS and Max Intensity for the MIPS
         %jar_path = '/home2/kdean/Documents/MATLAB/AdvancedImaging/stitching/bigstitcher/autopilot-1.0.jar';
         %javaaddpath(jar_path);

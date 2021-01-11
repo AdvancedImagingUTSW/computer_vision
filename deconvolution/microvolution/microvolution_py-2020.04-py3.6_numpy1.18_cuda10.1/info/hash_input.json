@@ -1,0 +1,4 @@
+{
+  "numpy": "1.18",
+  "cxx_compiler": "gxx"
+}

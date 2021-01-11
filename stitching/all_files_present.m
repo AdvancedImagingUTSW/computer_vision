@@ -1,7 +1,7 @@
 function [number_of_positions, number_of_channels, image_type] = all_files_present(data_directory)
 
 %% Determine the Number of Positions
-[number_of_positions] = numberOfStrings(data_directory,'position');
+[number_of_positions] = number_of_strings(data_directory,'position');
 if(number_of_positions == 0)
     disp('No Position Folders Found');
     return
@@ -9,7 +9,7 @@ end
 
 %% Determine Number of Channels
 position_idx = 1;
-number_of_channels = numberOfStrings(fullfile(data_directory,['position ' num2str(position_idx)]),'1_CH');
+number_of_channels = number_of_strings(fullfile(data_directory,['position ' num2str(position_idx)]),'1_CH');
 disp(['The total Number of Channels is = ' num2str(number_of_channels)]);
 
 %% Determine Image Type
@@ -39,8 +39,8 @@ for position_idx = 1:1:number_of_positions
     end
     
     % Image Files
-    for channelIdx = 1:1:number_of_channels
-        filepath=fullfile(data_directory,['position ' num2str(position_idx)],['1_CH0' num2str(channelIdx-1) '_000000' image_type]);
+    for channel_idx = 1:1:number_of_channels
+        filepath=fullfile(data_directory,['position ' num2str(position_idx)],['1_CH0' num2str(channel_idx-1) '_000000' image_type]);
         result = isfile(filepath);
         if result==1
         else

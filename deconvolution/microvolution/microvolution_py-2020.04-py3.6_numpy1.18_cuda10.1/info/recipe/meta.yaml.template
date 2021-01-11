@@ -1,0 +1,35 @@
+{% set version = "2020.04" %}
+
+package:
+  name: microvolution_py
+  version: {{ version }}
+
+source:
+  path: ../
+
+build:
+  number: 3
+  string: {{ "py" ~ python ~ "_" ~ "numpy" ~ numpy ~ "_" ~ "cuda" ~ environ.get('CUDA_VERS','10.1') }}
+  rpaths:
+    - lib
+  binary_relocation: True
+
+requirements:
+  build:
+    - python {{ python }}
+    - numpy {{ numpy }}
+    - pybind11
+    - cmake
+    - {{ compiler('cxx') }}
+    - vc 14 # [win]
+  host:
+    - python
+    - numpy
+  run:
+    - python {{ python }}
+    - numpy {{ numpy }}
+    - vs2015_runtime  # [win]
+
+about:
+  summary: Microvolution wrapper in Python
+  license_file: LICENSE

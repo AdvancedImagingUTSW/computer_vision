@@ -1,4 +1,4 @@
-function generate_xml_file(dataDirectory, numberOfPositions)
+function generate_xml_file(data_directory, number_of_positions)
 %Dean Lab- Kevin Dean, Evgenia Azarova, Saumya Vora - 07/17/2019
 %Intended to create xml file
 %Pre-processing using 'bigStitchDirectory'
@@ -6,30 +6,28 @@ function generate_xml_file(dataDirectory, numberOfPositions)
 
 %%
 disp('Generating XML File');
-dataLocations = zeros(numberOfPositions,3);
-for positionIdx = 1:1:numberOfPositions
-    if(positionIdx == 1)
-        AcqInfo = readAcqInfo(dataDirectory,positionIdx);
-        lateralPixelSize=AcqInfo{4,2};
-        axialPixelSize = AcqInfo{6,2};
+data_locations = zeros(number_of_positions,3);
+for position_idx = 1:1:number_of_positions
+    if(position_idx == 1)
+        acq_info = read_acq_info(data_directory,position_idx);
+        lateral_pixel_size=acq_info{4,2};
+        axial_pixel_size = acq_info{6,2};
     end
-    AcqInfo = readAcqInfo(dataDirectory,positionIdx);
+    acq_info = read_acq_info(data_directory,position_idx);
     
     % Identify the XYZ Coordinates.
-    positionX = AcqInfo{22,2};
-    positionY = AcqInfo{23,2};
-    positionZ = AcqInfo{24,2};
-    dataLocations(positionIdx,1) = positionX;
-    dataLocations(positionIdx,2) = positionY;
-    dataLocations(positionIdx,3) = positionZ;
+    position_X = acq_info{22,2};
+    position_Y = acq_info{23,2};
+    position_Z = acq_info{24,2};
+    data_locations(position_idx,1) = position_X;
+    data_locations(position_idx,2) = position_Y;
+    data_locations(position_idx,3) = position_Z;
   
 end
 
-
-
-numberOfPositions=length(dataLocations); %user specified
-pixelRatio = axialPixelSize/lateralPixelSize;
-dataLocations = dataLocations*pixelRatio;
+number_of_positions=length(data_locations); %user specified
+pixel_ratio = axial_pixel_size/lateral_pixel_size;
+data_locations = data_locations*pixel_ratio;
 
 % imageParamters = imfinfo(imagePath);
 % imageParamters.Width...
@@ -52,23 +50,23 @@ fprintf(fileID,'\t\t</ImageLoader> \n');
 fprintf(fileID,'<ViewSetups>\n');
 
 %% Loop for id, name, size and tile
-for positionIdx = 1:1:numberOfPositions
+for position_idx = 1:1:number_of_positions
     
     fprintf(fileID,'\t<ViewSetup>\n');
-    idValue=['\t\t\t<id>' , num2str(positionIdx-1) ,'</id>\n'];
+    idValue=['\t\t\t<id>' , num2str(position_idx-1) ,'</id>\n'];
     fprintf(fileID,idValue);
-    nameValue=['\t\t\t<name>' , num2str(positionIdx-1) ,'</name>\n'];
+    nameValue=['\t\t\t<name>' , num2str(position_idx-1) ,'</name>\n'];
     fprintf(fileID,nameValue);
     fprintf(fileID,'\t\t<size>2048 2048 471</size>\n');
     fprintf(fileID,'\t\t<voxelSize>\n');
     fprintf(fileID,'\t\t\t<unit>um</unit>\n');
-    pixelsize=['\t\t\t<size>' num2str(lateralPixelSize),' ' ,num2str(lateralPixelSize),' ' ,num2str(axialPixelSize), '</size> \n'];
+    pixelsize=['\t\t\t<size>' num2str(lateral_pixel_size),' ' ,num2str(lateral_pixel_size),' ' ,num2str(axial_pixel_size), '</size> \n'];
     fprintf(fileID,pixelsize);
     fprintf(fileID,'\t\t</voxelSize>\n');
     fprintf(fileID,'\t\t<attributes>\n');
     fprintf(fileID,'\t\t\t<illumination>0</illumination>\n');
     fprintf(fileID,'\t\t\t<channel>0</channel>\n');
-    positionNum=['\t\t\t<tile>' , num2str(positionIdx-1) , '</tile>\n'];
+    positionNum=['\t\t\t<tile>' , num2str(position_idx-1) , '</tile>\n'];
     fprintf(fileID,positionNum);
     fprintf(fileID,'\t\t\t<angle>0</angle>\n');
     fprintf(fileID,'\t\t</attributes>\n');
@@ -92,11 +90,11 @@ fprintf(fileID,'\t<Attributes name="tile">\n');
 
 %% specifying the correct tile ID
 %for channelIdx = 1...
-for positionIdx = 1:1:numberOfPositions
+for position_idx = 1:1:number_of_positions
     fprintf(fileID,'\t\t<Tile>\n');
-    idValue=['\t\t\t<id>' , num2str(positionIdx-1) , '</id>\n'];
+    idValue=['\t\t\t<id>' , num2str(position_idx-1) , '</id>\n'];
     fprintf(fileID,idValue);
-    nameValue=['\t\t\t<name>' , num2str(positionIdx) , '</name>\n'];
+    nameValue=['\t\t\t<name>' , num2str(position_idx) , '</name>\n'];
     fprintf(fileID,nameValue);
     fprintf(fileID,'\t\t</Tile>\n');
 end
@@ -118,21 +116,21 @@ fprintf(fileID,'\t<ViewRegistrations>\n');
 
 
 %% Loop for timepoint and setup
-for positionIdx = 1:1:numberOfPositions
-    setupValue=['\t<ViewRegistration timepoint="0" setup="',num2str(positionIdx-1), '">\n'];
+for position_idx = 1:1:number_of_positions
+    setupValue=['\t<ViewRegistration timepoint="0" setup="',num2str(position_idx-1), '">\n'];
     fprintf(fileID,setupValue);
     fprintf(fileID,'\t\t<ViewTransform type="affine">\n');
     fprintf(fileID,'\t\t\t<Name>Translation from Tile Configuration</Name>\n');
     
-    firstValue = dataLocations(positionIdx,1)./lateralPixelSize;
-    secondValue = dataLocations(positionIdx,2)./lateralPixelSize;
-    thirdValue = dataLocations(positionIdx,3)./lateralPixelSize;
+    firstValue = data_locations(position_idx,1)./lateral_pixel_size;
+    secondValue = data_locations(position_idx,2)./lateral_pixel_size;
+    thirdValue = data_locations(position_idx,3)./lateral_pixel_size;
     
     fprintf(fileID,['\t\t\t<affine>1.0 0.0 0.0 ' num2str(firstValue) ' 0.0 1.0 0.0 ' num2str(secondValue) ' 0.0 0.0 1.0 ' num2str(thirdValue) '</affine>\n']);
     fprintf(fileID,'\t\t</ViewTransform>\n');
     fprintf(fileID,'\t\t<ViewTransform type="affine">\n');
     fprintf(fileID,'\t\t\t<Name>calibration</Name>\n');
-    fprintf(fileID,['\t\t\t<affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 ' num2str(axialPixelSize/lateralPixelSize) '</affine>\n']);
+    fprintf(fileID,['\t\t\t<affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 ' num2str(axial_pixel_size/lateral_pixel_size) '</affine>\n']);
     fprintf(fileID,'\t\t</ViewTransform>\n');
     fprintf(fileID,'\t</ViewRegistration>  \n');
 end

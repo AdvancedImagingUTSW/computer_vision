@@ -1,0 +1,65 @@
+{
+  "paths": [
+    {
+      "_path": "lib/libMicrovolution.so",
+      "path_type": "hardlink",
+      "sha256": "20c0f8aff8b7473a8a28b7ac34dc62e62c51579ab9ae7b68dd3ec29ccb96b7d4",
+      "size_in_bytes": 22563824
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/PKG-INFO",
+      "path_type": "hardlink",
+      "sha256": "aceb2023e953233b8df8135fa20cfcd2bc5e209bc88bc022dca308cb88d2e18d",
+      "size_in_bytes": 810
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/SOURCES.txt",
+      "path_type": "hardlink",
+      "sha256": "523ddf0277f09c15692b583a4a358919a1f4dd926db0af0105c2b43e2e7091f5",
+      "size_in_bytes": 301
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/dependency_links.txt",
+      "path_type": "hardlink",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_in_bytes": 1
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/eager_resources.txt",
+      "path_type": "hardlink",
+      "sha256": "9d8f096858b3eca9fd827dd77582adb6f744ab5914b5f3aec0e20cd09f336359",
+      "size_in_bytes": 54
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/native_libs.txt",
+      "path_type": "hardlink",
+      "sha256": "932612bbf8e04b07fe3dccb906dc565ca3c975b3f109a910ecd0cc7262ebd6b7",
+      "size_in_bytes": 49
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/not-zip-safe",
+      "path_type": "hardlink",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_in_bytes": 1
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py-2020.4-py3.6-linux-x86_64.egg-info/top_level.txt",
+      "path_type": "hardlink",
+      "sha256": "502da22d6d4c2a021f593483efdbedec434b2ac015f55409cd922b3f2e08a81c",
+      "size_in_bytes": 17
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py.cpython-36m-x86_64-linux-gnu.so",
+      "path_type": "hardlink",
+      "sha256": "3f0e0104e1e72e4f6d5b621b237936a8fdb8a758a440880730262966d68de0e9",
+      "size_in_bytes": 227496
+    },
+    {
+      "_path": "lib/python3.6/site-packages/microvolution_py.py",
+      "path_type": "hardlink",
+      "sha256": "5ff2fd808fe4014acbe82ac9b7b146968542834c15ab4518485e4c72ab6e5099",
+      "size_in_bytes": 321
+    }
+  ],
+  "paths_version": 1
+}
