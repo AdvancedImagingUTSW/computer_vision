@@ -1,0 +1,77 @@
+from tifffile import imread, imsave
+from scipy.optimize import nnls
+import numpy as np
+
+
+multichannel_data_path = '/archive/MIL/dean/spectral_unmixing/20200219_rawData/3label-4pro/200218/movie'
+multichannel_save_path = multichannel_data_path + '_results'
+channel_number = fp.number_of_channels(multichannel_data_path)
+time_number = fp.number_of_timepoints(multichannel_data_path)
+fp.all_files_present(multichannel_data_path, channel_number, time_number)
+
+print("Processing " + multichannel_data_path)
+print("Data Located: " + multichannel_data_path)
+print("Data Saved To: " + multichannel_save_path)
+
+if not os.path.isdir(multichannel_save_path):
+    os.mkdir(multichannel_save_path)
+
+# Load the Background Correction
+background_correction = bc.load_prepared_background_correction(median_background_path, channel_number)
+
+unmixing_matrix.read_csv(os.path.join(unmixing_matrix_path, 'unmixing_matrix.csv'), index=False)
+
+
+# Apply the Data Corrections
+for t_idx in tqdm(range(int(time_number))):
+
+    # Apply the Background Correction.
+    image_data = bc.background_correct_spectral_data(multichannel_data_path, channel_number, t_idx, background_correction)
+
+    # Apply the Flatfield correction.
+
+    # Register the Data
+    image_data = rc.transform_spectral_data(image_data, transform_object, channel_number)
+
+    # Clean up the Data of zero value or saturated pixels.
+    image_data = bc.cleanup_spectral_data(image_data, channel_number)
+
+    # Save the Data
+    fp.save_spectral_data(multichannel_save_path, image_data, channel_number, t_idx)
+    
+
+unmixing_np_matrix = unmixing_matrix.to_numpy()
+unmixing_np_matrix = np.abs(unmixing_np_matrix)
+
+for t_idx in tqdm(range(int(time_number))):
+    image_array = []
+    for ch_idx in range(int(channel_number)):
+        image_path = os.path.join(multichannel_save_path, fp.generate_image_name(ch_idx, t_idx))
+        image_temp = imread(image_path, key=0).astype(float)
+        image_temp = np.array(image_temp)
+        (y_len, x_len) = image_temp.shape
+        image_temp = np.ndarray.flatten(image_temp)
+        image_array.append(image_temp)
+    
+    image_array=np.array(image_array)
+    
+    # Initialize the vector to store the unmixed values.
+    x = []
+    
+    output = np.zeros((np.shape(image_array)[1], np.shape(unmixing_np_matrix)[1]))
+    residuals = np.zeros((np.shape(image_array)[1]))
+    for vec_idx in range(image_array.shape[1]): 
+        (x, y) = nnls(unmixing_np_matrix, image_array[:,vec_idx])
+        output[vec_idx] = x
+        residuals[vec_idx] = y
+    
+    for im_idx in range(np.shape(output)[1]):
+        output_array = np.uint16(output[:,im_idx])
+        output_array = output_array.reshape(y_len, x_len)
+        output_path = os.path.join(multichannel_save_path, 'um_' + fp.generate_image_name(im_idx, t_idx))
+        imsave(output_path, output_array)
+    
+    residuals = np.uint16(residuals)
+    residuals = residuals.reshape(y_len, x_len)
+    output_path = os.path.join(multichannel_save_path, 'res_' + fp.generate_image_name(0, t_idx))
+    imsave(output_path, residuals)
