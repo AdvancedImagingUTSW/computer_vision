@@ -1,4 +1,4 @@
 
 stitching/autopilot-1.0.jar
 spectral_unmixing/unmix_functions/__pycache__/*
-spectral_unmixing/unmix_functions/.ipynb_checkpoints/*
+spectral_unmixing/unmix_functions/.*
