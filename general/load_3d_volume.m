@@ -29,7 +29,7 @@ number_of_planes = p.z_range(1):p.z_interval:p.z_range(end);
 imageSize = [image_info(1).Height; image_info(1).Width; length(image_info)];
 image3D = zeros(p.x_range, p.y_range, length(number_of_planes));
 
-parfor zIdx = 1:1:length(number_of_planes)
+for zIdx = 1:1:length(number_of_planes)
     z = number_of_planes(zIdx);
     image3D(:,:,zIdx) = im2double(imread(fullfile(input_directory, image_name), 'Index', z));
 end

@@ -1,5 +1,17 @@
+% watershed_roi  Perform local label-based watershed.
+% This function is called with any of these syntaxes:
+%
+%   watershed_roi(in1, in2, in 3, in4, in5, in6) accepts 6 required arguments. 
+%   watershed_roi(in1, in2, in3) also accepts an optional 3rd argument.
+%   Will modify soon to have optional arguments.
+%   watershed_roi(___, NAME, VALUE) accepts one or more of the following name-value pair 
+%       arguments. This syntax can be used in any of the previous syntaxes.
+%           * 'NAME1' with logical value
+%           * 'NAME2' with 'Default', 'Choice1', or 'Choice2'
 function [movie_info, feat_prop_final_3d ] = watershed_roi (image_volume,low_frequency,high_frequency,...
     step_size, difference_of_gaussians, noise_sigma)
+
+
 
 image_volume = im2uint16(image_volume);
 

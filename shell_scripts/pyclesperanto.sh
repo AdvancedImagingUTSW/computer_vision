@@ -2,7 +2,7 @@
 
 module add cuda101/toolkit/10.1.243
 module load python/3.6.4-anaconda
-source activate cellpose
+source activate pyclesperanto
 
 # Specify Directory
 #input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/mutant/"

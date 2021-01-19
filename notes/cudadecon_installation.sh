@@ -40,8 +40,6 @@ Please carefully study the documentation linked above for further help.
 
 Original error was: libcblas.so.3: cannot open shared object file: No such file or directory
 
-Original error was: libcblas.so.3
-
 Removed numpy, and reinstalled it.  Works fine now.
 
 Tifffile also works now.
@@ -57,3 +55,4 @@ git clone https://github.com/tlambert03/pycudadecon.git
 # FUCKING CONDA FORGE
 # Removed talley and conda-forge from ~/.condarc
 conda create -n decon_env python=3.7 numpy tifffile
+conda install -c talley llspylibs
