@@ -1,44 +1,30 @@
-function AcqInfoMIL = readAcqInfoMIL(dataDirectory,positionIdx)
+function acq_info = read_acq_info(data_directory,position_idx)
 %% Import data from text file.
 % Script for importing data from the following folder created for MIL in the format :
 % dataDirectory/acquisitionInfo
 % for Microscopy Innovation Lab
 % Saumya Vora, 13-08-2020
 
-%% Initialize variables.
-newAcqInfoName =  ['AcqInfo_' sprintf('%06d',positionIdx) '.txt'];
-newLocation = fullfile(dataDirectory,'acquisitionInfo');
-
-filename = fullfile(newLocation,newAcqInfoName);
-delimiter = {',','='};
-
-%% Read columns of data as text:
-% For more information, see the TEXTSCAN documentation.
-formatSpec = '%q%q%[^\n\r]';
+%% Initialize Text File Location.
+acq_info_location = fullfile(data_directory,['position ' num2str(position_idx)],'AcqInfo.txt');
 
 %% Open the text file.
-fileID = fopen(filename,'r');
-
-%% Read columns of data according to the format.
-% This call is based on the structure of the file used to generate this
-% code. If an error occurs for a different file, try regenerating the code
-% from the Import Tool.
-dataArray = textscan(fileID, formatSpec, 'Delimiter', delimiter, 'TextType', 'string',  'ReturnOnError', false);
-
-%% Close the text file.
-fclose(fileID);
+text_file_import = fopen(acq_info_location,'r');
+delimiter = {',','='}; format_spec = '%q%q%[^\n\r]';
+data_array = textscan(text_file_import, format_spec, 'Delimiter', delimiter, 'TextType', 'string',  'ReturnOnError', false);
+fclose(text_file_import);
 
 %% Convert the contents of columns containing numeric text to numbers.
 % Replace non-numeric text with NaN.
-raw = repmat({''},length(dataArray{1}),length(dataArray)-1);
-for col=1:length(dataArray)-1
-    raw(1:length(dataArray{col}),col) = mat2cell(dataArray{col}, ones(length(dataArray{col}), 1));
+raw = repmat({''},length(data_array{1}),length(data_array)-1);
+for col=1:length(data_array)-1
+    raw(1:length(data_array{col}),col) = mat2cell(data_array{col}, ones(length(data_array{col}), 1));
 end
-numericData = NaN(size(dataArray{1},1),size(dataArray,2));
+numericData = NaN(size(data_array{1},1),size(data_array,2));
 
 % Converts text in the input cell array to numbers. Replaced non-numeric
 % text with NaN.
-rawData = dataArray{2};
+rawData = data_array{2};
 for row=1:size(rawData, 1)
     % Create a regular expression to detect and remove non-numeric prefixes and
     % suffixes.
@@ -72,15 +58,11 @@ end
 rawNumericColumns = raw(:, 2);
 rawStringColumns = string(raw(:, 1));
 
-
 %% Replace non-numeric cells with NaN
 R = cellfun(@(x) ~isnumeric(x) && ~islogical(x),rawNumericColumns); % Find non-numeric cells
 rawNumericColumns(R) = {NaN}; % Replace non-numeric cells
 
 %% Create output variable
-AcqInfoMIL = raw;
-%% Clear temporary variables
-clearvars filename delimiter formatSpec fileID dataArray ans raw col numericData rawData row regexstr result numbers invalidThousandsSeparator thousandsRegExp rawNumericColumns rawStringColumns R;
-
+acq_info = raw;
 
 end

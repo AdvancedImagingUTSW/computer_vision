@@ -22,7 +22,6 @@ for position_idx = 1:1:number_of_positions
     data_locations(position_idx,1) = position_X;
     data_locations(position_idx,2) = position_Y;
     data_locations(position_idx,3) = position_Z;
-  
 end
 
 number_of_positions=length(data_locations); %user specified
@@ -148,4 +147,6 @@ fprintf(fileID,'</SpimData> \n');
 % Close the File
 fclose(fileID);
 
+disp('XML File Created');
 end
+

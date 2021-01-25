@@ -1,7 +1,7 @@
 function [number_of_positions, number_of_channels, image_type] = all_files_present(data_directory)
 
 %% Determine the Number of Positions
-[number_of_positions] = numberOfStrings(data_directory,'position');
+[number_of_positions] = number_of_strings(data_directory,'position');
 if(number_of_positions == 0)
     disp('No Position Folders Found');
     return

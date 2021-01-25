@@ -12,7 +12,7 @@ python_imports="from pycudadecon import decon; import tifffile;"
 
 
 
-python -c "$module_imports  "
+python -c "$module_imports result=decon($input_path, $psf_path); "
 
 
 from pycudadecon import decon

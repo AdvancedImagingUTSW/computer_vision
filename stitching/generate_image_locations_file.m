@@ -11,15 +11,14 @@ for channel_idx = 1:1:number_of_channels
     for position_idx = 1:1:number_of_positions
         counter = counter +1;
         
-        AcqInfo = read_acq_info(data_directory,position_idx);
+        acq_info = read_acq_info(data_directory,position_idx);
         % Identify the XYZ Coordinates.
-        positionX = AcqInfo{22,2};
-        positionY = AcqInfo{23,2};
-        positionZ = AcqInfo{24,2};
+        positionX = acq_info{22,2};
+        positionY = acq_info{23,2};
+        positionZ = acq_info{24,2};
         
         % Generate the String Output
         data_output = [num2str(counter-1) ';;(' num2str(positionX) ',' num2str(positionY) ',' num2str(positionZ) ')'];
-        
         
         % Print the String Output
         fprintf(fileID,data_output);
@@ -28,5 +27,6 @@ for channel_idx = 1:1:number_of_channels
     end
 end
 
-% Close the File
 fclose(fileID);
+
+disp('Image Locations File Created');

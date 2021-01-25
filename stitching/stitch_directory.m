@@ -27,34 +27,14 @@ elseif isunix
         %% Move Files into Common Directory
         organize_stitching_data(data_directory, number_of_positions, number_of_channels, image_type);
         
-        %% Perform Maximum Intensity Projection
-        maximum_intensity_project_data(data_directory, number_of_channels);
-        
-        %% Evaluate for Image Content
-        image_max_counts = zeros(number_of_positions,number_of_channels);
-        for c = 1:1:number_of_channels
-            parfor p = 1:1:number_of_positions
-                image_data = imread(fullfile(data_directory, ['MIP_CH0' num2str(c-1)], ['1_CH0' num2str(c-1) '_' num2str(p) '.tif']));
-                image_max_counts(p,c) = max(image_data(:));
-            end
-        end
-        
         %% Generate Text File Containing Position Information
         generate_image_locations_file(data_directory, number_of_positions, number_of_channels);
         
         %% Generate XML File - Currently assumes single channel
         generate_xml_file(data_directory, number_of_positions);
-        
-        %% Create a JSON File for Stitching-Spark
-        generate_json_file(data_directory, number_of_positions, number_of_channels, image_type);
-        
+
         %% Clean Up the Directory
         cleanup_stitching_directory(data_directory, number_of_positions);
-              
-        %% Calculate DCTS and Max Intensity for the MIPS
-        %jar_path = '/home2/kdean/Documents/MATLAB/AdvancedImaging/stitching/bigstitcher/autopilot-1.0.jar';
-        %javaaddpath(jar_path);
-        %measure_image_sharpness(dataDirectory, numberOfPositions, numberOfChannels);
-        
+
     end
 end
