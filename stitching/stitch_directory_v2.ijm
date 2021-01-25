@@ -1,5 +1,5 @@
 data_directory = '/archive/MIL/dean/test';
-
+downsampling_factor = 16;
 verbose = 0;
 
 print("\\Clear");
@@ -142,8 +142,6 @@ for (text_idx = 0; text_idx < rows.length; text_idx++) {
 	}
 }
 
-
-
 // Determine Voxel Size
 size_x = substring(rows[x_idx], indexOf(rows[x_idx], '= ')+2, rows[x_idx].length);
 size_y = substring(rows[y_idx], indexOf(rows[y_idx], '= ')+2, rows[y_idx].length);
@@ -161,11 +159,7 @@ lateral_pixel_size = parseFloat(lateral_pixel_size);
 axial_pixel_size = parseFloat(axial_pixel_size);
 pixel_ratio = axial_pixel_size/lateral_pixel_size;
 
-// Move Files to a Common Directory
-
-
 // Collect all of the Image Positions
-// I need to find a way to automatically identify the proper indices.
 print("Evaluating Image Positions");
 x_locations = newArray(number_of_positions);
 y_locations = newArray(number_of_positions);
@@ -195,108 +189,209 @@ if (File.exists(data_directory+'dataset.xml')) {
 }
 
 fileID=File.open(data_directory+'dataset.xml');
-print(fileID,'<?xml version="1.0" encoding="UTF-8"?> \n');
-print(fileID,'<SpimData version="0.2"> \n');
-print(fileID,'\t<BasePath type="relative">.</BasePath> \n');
-print(fileID,'\t<SequenceDescription>\n');
-print(fileID,'\t\t<ImageLoader format="spimreconstruction.stack.ij"> \n');
-print(fileID,'\t\t\t<imagedirectory type="relative">.</imagedirectory> \n');
-print(fileID,'\t\t\t<filePattern>1_CH00_{x}.tif</filePattern> \n');
-print(fileID,'\t\t\t<layoutTimepoints>0</layoutTimepoints> \n');
-print(fileID,'\t\t\t<layoutChannels>0</layoutChannels> \n');
-print(fileID,'\t\t\t<layoutIlluminations>0</layoutIlluminations> \n');
-print(fileID,'\t\t\t<layoutAngles>0</layoutAngles> \n');
-print(fileID,'\t\t\t<layoutTiles>1</layoutTiles> \n');
-print(fileID,'\t\t\t<imglib2container>ArrayImgFactory</imglib2container> \n');
-print(fileID,'\t\t</ImageLoader> \n');
-print(fileID,'\t\t<ViewSetups>\n');
+print(fileID,'<?xml version="1.0" encoding="UTF-8"?>\n');
+print(fileID,'<SpimData version="0.2">\n');
+print(fileID,' <BasePath type="relative">.</BasePath>\n');
+print(fileID,' <SequenceDescription>\n');
+print(fileID,'  <ImageLoader format="spimreconstruction.stack.ij">\n');
+print(fileID,'   <imagedirectory type="relative">.</imagedirectory>\n');
+print(fileID,'   <filePattern>position {x}/1_CH00_000000.tif</filePattern>\n');
+print(fileID,'   <layoutTimepoints>0</layoutTimepoints>\n');
+print(fileID,'   <layoutChannels>0</layoutChannels>\n');
+print(fileID,'   <layoutIlluminations>0</layoutIlluminations>\n');
+print(fileID,'   <layoutAngles>0</layoutAngles>\n');
+print(fileID,'   <layoutTiles>1</layoutTiles>\n');
+print(fileID,'   <imglib2container>ArrayImgFactory</imglib2container>\n');
+print(fileID,'  </ImageLoader>\n');
+print(fileID,'  <ViewSetups>\n');
 
 for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
-	print(fileID,'\t\t\t<ViewSetup>\n');
-    print(fileID,'\t\t\t\t<id>'+floor(position_idx-1)+'</id>\n');
-    print(fileID,'\t\t\t\t<name>'+floor(position_idx-1)+'</name>\n');
-    print(fileID,'\t\t\t\t<size>'+size_x+' '+size_y+' '+size_z+'</size>\n');
-    print(fileID,'\t\t\t\t<voxelSize>\n');
-    print(fileID,'\t\t\t\t\t<unit>um</unit>\n');
-    print(fileID,'\t\t\t\t\t<size>'+d2s(lateral_pixel_size,3)+' '+d2s(lateral_pixel_size,3)+' '+d2s(axial_pixel_size,3)+'</size> \n');
-    print(fileID,'\t\t\t\t</voxelSize>\n');
-    print(fileID,'\t\t\t\t<attributes>\n');
-    print(fileID,'\t\t\t\t\t<illumination>0</illumination>\n');
-    print(fileID,'\t\t\t\t\t<channel>0</channel>\n');
-    print(fileID,'\t\t\t\t\t<tile>'+floor(position_idx-1)+'</tile>\n');
-    print(fileID,'\t\t\t\t\t<angle>0</angle>\n');
-    print(fileID,'\t\t\t\t</attributes>\n');
-    print(fileID,'\t\t\t</ViewSetup>\n');
+	print(fileID,'   <ViewSetup>\n');
+    print(fileID,'    <id>'+floor(position_idx-1)+'</id>\n');
+    print(fileID,'    <name>'+floor(position_idx-1)+'</name>\n');
+    print(fileID,'    <size>'+size_x+' '+size_y+' '+size_z+'</size>\n');
+    print(fileID,'    <voxelSize>\n');
+    print(fileID,'     <unit>um</unit>\n');
+    print(fileID,'     <size>'+d2s(lateral_pixel_size,3)+' '+d2s(lateral_pixel_size,3)+' '+d2s(axial_pixel_size,3)+'</size>\n');
+    print(fileID,'    </voxelSize>\n');
+    print(fileID,'    <attributes>\n');
+    print(fileID,'     <illumination>0</illumination>\n');
+    print(fileID,'     <channel>0</channel>\n');
+    print(fileID,'     <tile>'+floor(position_idx-1)+'</tile>\n');
+    print(fileID,'     <angle>0</angle>\n');
+    print(fileID,'    </attributes>\n');
+    print(fileID,'   </ViewSetup>\n');
 }
 
-print(fileID,'\t\t\t<Attributes name="illumination">\n');
-print(fileID,'\t\t\t\t<Illumination>\n');
-print(fileID,'\t\t\t\t\t<id>0</id>\n');
-print(fileID,'\t\t\t\t\t<name>0</name>\n');
-print(fileID,'\t\t\t\t</Illumination>\n');
-print(fileID,'\t\t\t</Attributes>\n');
-print(fileID,'\t\t\t<Attributes name="channel">\n');
-print(fileID,'\t\t\t\t<Channel>\n');
-print(fileID,'\t\t\t\t\t<id>0</id>\n');
-print(fileID,'\t\t\t\t\t<name>0</name>\n');
-print(fileID,'\t\t\t\t</Channel>\n');
+print(fileID,'   <Attributes name="illumination">\n');
+print(fileID,'    <Illumination>\n');
+print(fileID,'     <id>0</id>\n');
+print(fileID,'     <name>0</name>\n');
+print(fileID,'    </Illumination>\n');
+print(fileID,'   </Attributes>\n');
+print(fileID,'   <Attributes name="channel">\n');
+print(fileID,'    <Channel>\n');
+print(fileID,'     <id>0</id>\n');
+print(fileID,'     <name>0</name>\n');
+print(fileID,'    </Channel>\n');
 
-print(fileID,'\t\t\t</Attributes>\n');
-print(fileID,'\t\t\t<Attributes name="tile">\n');
+print(fileID,'   </Attributes>\n');
+print(fileID,'   <Attributes name="tile">\n');
 for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
-    print(fileID,'\t\t\t\t<Tile>\n');
-    print(fileID,'\t\t\t\t\t<id>'+d2s(position_idx-1,4)+'</id>\n');
-    print(fileID,'\t\t\t\t\t<name>'+d2s(position_idx,4)+'</name>\n');
-    print(fileID,'\t\t\t\t</Tile>\n');
+    print(fileID,'    <Tile>\n');
+    print(fileID,'     <id>'+floor(position_idx-1)+'</id>\n');
+    print(fileID,'     <name>'+floor(position_idx)+'</name>\n');
+    print(fileID,'    </Tile>\n');
 }
-print(fileID,'\t\t\t</Attributes>\n');
+print(fileID,'   </Attributes>\n');
 
 // Angle
-print(fileID,'\t\t\t<Attributes name="angle">\n');
-print(fileID,'\t\t\t\t<Angle>\n');
-print(fileID,'\t\t\t\t\t<id>0</id>\n');
-print(fileID,'\t\t\t\t\t<name>0</name>\n');
-print(fileID,'\t\t\t\t</Angle>\n');
-print(fileID,'\t\t\t</Attributes>\n');
-print(fileID,'\t\t</ViewSetups>\n');
+print(fileID,'   <Attributes name="angle">\n');
+print(fileID,'    <Angle>\n');
+print(fileID,'     <id>0</id>\n');
+print(fileID,'     <name>0</name>\n');
+print(fileID,'    </Angle>\n');
+print(fileID,'   </Attributes>\n');
+print(fileID,'  </ViewSetups>\n');
 
 // Time
-print(fileID,'\t\t<Timepoints type="pattern">\n');
-print(fileID,'\t\t\t<integerpattern />\n');
-print(fileID,'\t\t</Timepoints>\n');
-
-// Missing Views and Close Out Sequence Description
-print(fileID,'\t\t<MissingViews />');
-print(fileID,'\t</SequenceDescription>\n');
+print(fileID,'  <Timepoints type="pattern">\n');
+print(fileID,'   <integerpattern />\n');
+print(fileID,'  </Timepoints>\n');
+print(fileID,' </SequenceDescription>\n');
 
 // Registration
-print(fileID,'\t<ViewRegistrations>\n');
-
+print(fileID,' <ViewRegistrations>\n');
 // Need to look into this.  Why is it that all three have the lateral pixel size?
 for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
-    print(fileID,'\t\t<ViewRegistration timepoint="0" setup="'+floor(position_idx-1)+'">\n');
-    print(fileID,'\t\t\t<ViewTransform type="affine">\n');
-    print(fileID,'\t\t\t\t<Name>Translation from Tile Configuration</Name>\n');
+    print(fileID,'  <ViewRegistration timepoint="0" setup="'+floor(position_idx-1)+'">\n');
+    print(fileID,'   <ViewTransform type="affine">\n');
+    // print(fileID,'    <Name>Translation from Tile Configuration</Name>\n');
 
 	x = x_locations[position_idx-1]/lateral_pixel_size;
 	y = y_locations[position_idx-1]/lateral_pixel_size;
 	z = z_locations[position_idx-1]/lateral_pixel_size;
 
-    print(fileID,'\t\t\t\t<affine>1.0 0.0 0.0 '+d2s(x,4)+' 0.0 1.0 0.0 '+d2s(y,4)+' 0.0 0.0 1.0 '+d2s(z,4)+'</affine>\n');
-    print(fileID,'\t\t\t</ViewTransform>\n');
-    print(fileID,'\t\t\t<ViewTransform type="affine">\n');
-    print(fileID,'\t\t\t\t<Name>calibration</Name>\n');
-    print(fileID,'\t\t\t\t<affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 '+d2s(pixel_ratio,4)+'</affine>\n');
-    print(fileID,'\t\t\t</ViewTransform>\n');
-    print(fileID,'\t\t</ViewRegistration>  \n');
+    print(fileID,'    <affine>1.0 0.0 0.0 '+d2s(x,4)+' 0.0 1.0 0.0 '+d2s(y,4)+' 0.0 0.0 1.0 '+d2s(z,4)+'</affine>\n');
+    print(fileID,'   </ViewTransform>\n');
+    print(fileID,'   <ViewTransform type="affine">\n');
+    print(fileID,'    <Name>calibration</Name>\n');
+    print(fileID,'    <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 '+d2s(pixel_ratio,4)+'</affine>\n');
+    print(fileID,'   </ViewTransform>\n');
+    print(fileID,'  </ViewRegistration>\n');
 }
 
-print(fileID,'\t</ViewRegistrations>\n');
-print(fileID,'\t<ViewInterestPoints />\n');
-print(fileID,'\t<BoundingBoxes />\n');
-print(fileID,'\t<PointSpreadFunctions />\n');
-print(fileID,'\t<StitchingResults />\n');
-print(fileID,'\t<IntensityAdjustments />\n');
-print(fileID,'</SpimData> \n');
+print(fileID,' </ViewRegistrations>\n');
+print(fileID,' <ViewInterestPoints />\n');
+print(fileID,' <BoundingBoxes />\n');
+print(fileID,' <PointSpreadFunctions />\n');
+print(fileID,' <StitchingResults />\n');
+print(fileID,' <IntensityAdjustments />\n');
+print(fileID,'</SpimData>\n');
 
 File.close(fileID);
+
+// Resave data as a a compressed N5 file.
+run("As N5 ...", 
+	"select="+data_directory+"dataset.xml" +
+	" resave_angle=[All angles] "+ 
+	"resave_channel=[All channels] "+
+	"resave_illumination=[All illuminations] "+
+	"resave_tile=[All tiles] "+
+	"resave_timepoint=[All Timepoints] "+
+	"compression=[Raw (no compression)] "+
+	"subsampling_factors=[{ {1,1,1}, {2,2,2}, {4,4,4}, {8,8,8} }] "+
+	"n5_block_sizes=[{ {128,128,64}, {128,128,64}, {128,128,64}, {128,128,64} }] "+
+	"output_xml="+data_directory+"dataset-n5.xml "+
+	"output_n5="+data_directory+"dataset.n5 write_xml write_data");
+
+
+// Calculate Pairwise Shifts
+run("Calculate pairwise shifts ...", 
+	"select="+data_directory+"dataset-n5.xml" +
+	" process_angle=[All angles]" +
+	" process_channel=[All channels]" +
+	" process_illumination=[All illuminations]" +
+	" process_tile=[Range of tiles (Specify by Name)]" +
+	" process_timepoint=[All Timepoints]" +
+	" process_following_tiles=[All Tiles]" +
+	" method=[Phase Correlation]" +
+	" show_expert_grouping_options how_to_treat_timepoints=[treat individually]" +
+	" channels=[Average Channels]" +
+	" how_to_treat_illuminations=group how_to_treat_angles=[treat individually]" +
+	" how_to_treat_tiles=compare" +
+	" downsample_in_x=2 downsample_in_y=2 downsample_in_z=2");
+	print("Pairwise Shift Complete");
+
+// Filter Pairwise Shifts
+run("Filter pairwise shifts ...", 
+	"select="+data_directory+"dataset-n5.xml" +
+	" filter_by_link_quality" +
+	" min_r=0.85" + 
+	" max_r=1" +
+	" max_shift_in_x=0" +
+	" max_shift_in_y=0" +
+	" max_shift_in_z=0" +
+	" max_displacement=0");
+	print("Shifts Filtered");
+
+// Optimize Globally
+run("Optimize globally and apply shifts ...", 
+	"select="+data_directory+"dataset-n5.xml" +
+	" process_angle=[All angles]" +
+	" process_channel=[All channels]" +
+	" process_illumination=[All illuminations]" +
+	" process_tile=[Range of tiles (Specify by Name)]" +
+	" process_timepoint=[All Timepoints]" +
+	" process_following_tiles=[All tiles]" +
+	" relative=2.500" +
+	" absolute=3.500" +
+	" global_optimization_strategy=[One-Round with iterative dropping of bad links]" +
+	" fix_group_0-0");
+	print("Shifts Globally Optimized");
+
+
+// Create Export Directory
+save_directory = data_directory + "fused_"+downsampling_factor+"x_downsampled";
+if (!endsWith(save_directory, File.separator)) {
+		save_directory = save_directory + File.separator;
+}
+File.makeDirectory(save_directory)
+
+// Fuse the Dataset
+run("Fuse dataset ...", 
+	"select="+data_directory+"dataset-n5.xml" +
+	" process_angle=[All angles]" +
+	" process_channel=[All channels]" +
+	" process_illumination=[All illuminations]" +
+	" process_tile=[All tiles]" +
+	" process_timepoint=[All Timepoints]" +
+	" bounding_box=[Currently Selected Views]" +
+	" downsampling="+downsampling_factor +
+	" pixel_type=[16-bit unsigned integer]" +
+	" interpolation=[Linear Interpolation]" +
+	" image=Virtual" +
+	" blend preserve_original" +
+	" produce=[Each timepoint & channel]" +
+	" fused_image=[Display using ImageJ]");
+
+// Export Individual Slices
+getDimensions(w, h, channels, slices, frames);
+print("Number Of Slices = "+slices);
+
+for (slice_idx=1; slice_idx<slices+1; slice_idx++) {
+	image_name = save_directory+slice_idx+".tif";
+	if (File.exists(image_name)) {
+		print("Image "+image_name+" already exists"); 
+	}
+	if (!File.exists(image_name)) {
+		run("Duplicate...",
+		"title=temp duplicate range="+slice_idx+"-"+slice_idx+" use");
+		saveAs("Tiff", save_directory+slice_idx+".tif");
+		close();
+	}
+}
+
+
+
+// eval("script", "System.exit(0);");
