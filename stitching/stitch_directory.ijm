@@ -2,6 +2,13 @@ data_directory = '/archive/MIL/dean/test';
 downsampling_factor = 16;
 verbose = 0;
 
+/* An automated pipeline for identifying the number of positions, channels, and timepoints.
+ *  Currently only set to hanle multiple positions and channels.
+ *  Need to confirm why the lateral voxel size is used in one section.
+ *  Ideally, scale up to be able to do mutiple time points. 
+ *  Creates the XML file, saves to N5, and performs stitching.
+ */
+
 print("\\Clear");
 // Append File Separator If Necessary
 if (!endsWith(data_directory, File.separator)){
@@ -41,8 +48,8 @@ while (File.exists(channel_path)) {
 	channel_idx++;
 	channel_path = data_directory+'position 1/1_CH0'+channel_idx+'_000000.tif';
 }
-number_of_channels = channel_idx;
-print(number_of_channels+" Channel Dataset");
+number_of_channels = channel_idx-1;
+print(number_of_channels+1+" Channel Dataset");
 
 // Evaluate Number of Time Points to Stitch
 time_idx = 0;
@@ -188,6 +195,7 @@ if (File.exists(data_directory+'dataset.xml')) {
 	File.delete(data_directory+'dataset.xml');
 }
 
+//Specify Image Loader
 fileID=File.open(data_directory+'dataset.xml');
 print(fileID,'<?xml version="1.0" encoding="UTF-8"?>\n');
 print(fileID,'<SpimData version="0.2">\n');
@@ -195,52 +203,63 @@ print(fileID,' <BasePath type="relative">.</BasePath>\n');
 print(fileID,' <SequenceDescription>\n');
 print(fileID,'  <ImageLoader format="spimreconstruction.stack.ij">\n');
 print(fileID,'   <imagedirectory type="relative">.</imagedirectory>\n');
-print(fileID,'   <filePattern>position {x}/1_CH00_000000.tif</filePattern>\n');
+print(fileID,'   <filePattern>position {x}/1_CH0{c}_000000.tif</filePattern>\n');
 print(fileID,'   <layoutTimepoints>0</layoutTimepoints>\n');
-print(fileID,'   <layoutChannels>0</layoutChannels>\n');
+print(fileID,'   <layoutChannels>'+number_of_channels+'</layoutChannels>\n');
 print(fileID,'   <layoutIlluminations>0</layoutIlluminations>\n');
 print(fileID,'   <layoutAngles>0</layoutAngles>\n');
 print(fileID,'   <layoutTiles>1</layoutTiles>\n');
 print(fileID,'   <imglib2container>ArrayImgFactory</imglib2container>\n');
 print(fileID,'  </ImageLoader>\n');
-print(fileID,'  <ViewSetups>\n');
 
-for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
-	print(fileID,'   <ViewSetup>\n');
-    print(fileID,'    <id>'+floor(position_idx-1)+'</id>\n');
-    print(fileID,'    <name>'+floor(position_idx-1)+'</name>\n');
-    print(fileID,'    <size>'+size_x+' '+size_y+' '+size_z+'</size>\n');
-    print(fileID,'    <voxelSize>\n');
-    print(fileID,'     <unit>um</unit>\n');
-    print(fileID,'     <size>'+d2s(lateral_pixel_size,3)+' '+d2s(lateral_pixel_size,3)+' '+d2s(axial_pixel_size,3)+'</size>\n');
-    print(fileID,'    </voxelSize>\n');
-    print(fileID,'    <attributes>\n');
-    print(fileID,'     <illumination>0</illumination>\n');
-    print(fileID,'     <channel>0</channel>\n');
-    print(fileID,'     <tile>'+floor(position_idx-1)+'</tile>\n');
-    print(fileID,'     <angle>0</angle>\n');
-    print(fileID,'    </attributes>\n');
-    print(fileID,'   </ViewSetup>\n');
+// Define Views
+print(fileID,'  <ViewSetups>\n');
+id_idx = 0;
+for (channel_idx = 0; channel_idx < number_of_channels+1; channel_idx++) {
+	for (position_idx = 0; position_idx < number_of_positions; position_idx++) {
+		print(fileID,'   <ViewSetup>\n');
+	    print(fileID,'    <id>'+id_idx+'</id>\n');
+	    print(fileID,'    <name>'+id_idx+'</name>\n');
+	    print(fileID,'    <size>'+size_x+' '+size_y+' '+size_z+'</size>\n');
+	    print(fileID,'    <voxelSize>\n');
+	    print(fileID,'     <unit>um</unit>\n');
+	    print(fileID,'     <size>'+d2s(lateral_pixel_size,3)+' '+d2s(lateral_pixel_size,3)+' '+d2s(axial_pixel_size,3)+'</size>\n');
+	    print(fileID,'    </voxelSize>\n');
+	    print(fileID,'    <attributes>\n');
+	    print(fileID,'     <illumination>0</illumination>\n');
+	    print(fileID,'     <channel>'+channel_idx+'</channel>\n');
+	    print(fileID,'     <tile>'+floor(position_idx)+'</tile>\n');
+	    print(fileID,'     <angle>0</angle>\n');
+	    print(fileID,'    </attributes>\n');
+	    print(fileID,'   </ViewSetup>\n');
+	    id_idx++;
+	}
 }
 
+// Illumination Attributes
 print(fileID,'   <Attributes name="illumination">\n');
 print(fileID,'    <Illumination>\n');
 print(fileID,'     <id>0</id>\n');
 print(fileID,'     <name>0</name>\n');
 print(fileID,'    </Illumination>\n');
 print(fileID,'   </Attributes>\n');
-print(fileID,'   <Attributes name="channel">\n');
-print(fileID,'    <Channel>\n');
-print(fileID,'     <id>0</id>\n');
-print(fileID,'     <name>0</name>\n');
-print(fileID,'    </Channel>\n');
 
+// Channel Attributes
+print(fileID,'   <Attributes name="channel">\n');
+for (channel_idx = 0; channel_idx < number_of_channels+1; channel_idx++) {
+	print(fileID,'    <Channel>\n');
+	print(fileID,'     <id>'+channel_idx+'</id>\n');
+	print(fileID,'     <name>'+channel_idx+'</name>\n');
+	print(fileID,'    </Channel>\n');
+}	
 print(fileID,'   </Attributes>\n');
+
+// Tile Attributes
 print(fileID,'   <Attributes name="tile">\n');
-for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
+for (position_idx = 0; position_idx < number_of_positions; position_idx++) {
     print(fileID,'    <Tile>\n');
-    print(fileID,'     <id>'+floor(position_idx-1)+'</id>\n');
-    print(fileID,'     <name>'+floor(position_idx)+'</name>\n');
+    print(fileID,'     <id>'+floor(position_idx)+'</id>\n');
+    print(fileID,'     <name>'+floor(position_idx+1)+'</name>\n');
     print(fileID,'    </Tile>\n');
 }
 print(fileID,'   </Attributes>\n');
@@ -260,28 +279,33 @@ print(fileID,'   <integerpattern />\n');
 print(fileID,'  </Timepoints>\n');
 print(fileID,' </SequenceDescription>\n');
 
-// Registration
+// View Registrations - Need to look into this.  Why is it that all three have the lateral pixel size?
 print(fileID,' <ViewRegistrations>\n');
-// Need to look into this.  Why is it that all three have the lateral pixel size?
-for (position_idx = 1; position_idx < number_of_positions+1; position_idx++) {
-    print(fileID,'  <ViewRegistration timepoint="0" setup="'+floor(position_idx-1)+'">\n');
-    print(fileID,'   <ViewTransform type="affine">\n');
-    // print(fileID,'    <Name>Translation from Tile Configuration</Name>\n');
-
-	x = x_locations[position_idx-1]/lateral_pixel_size;
-	y = y_locations[position_idx-1]/lateral_pixel_size;
-	z = z_locations[position_idx-1]/lateral_pixel_size;
-
-    print(fileID,'    <affine>1.0 0.0 0.0 '+d2s(x,4)+' 0.0 1.0 0.0 '+d2s(y,4)+' 0.0 0.0 1.0 '+d2s(z,4)+'</affine>\n');
-    print(fileID,'   </ViewTransform>\n');
-    print(fileID,'   <ViewTransform type="affine">\n');
-    print(fileID,'    <Name>calibration</Name>\n');
-    print(fileID,'    <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 '+d2s(pixel_ratio,4)+'</affine>\n');
-    print(fileID,'   </ViewTransform>\n');
-    print(fileID,'  </ViewRegistration>\n');
+setup_idx = 0;
+for (channel_idx = 0; channel_idx < number_of_channels+1; channel_idx++) {
+	for (position_idx = 0; position_idx < number_of_positions; position_idx++) {
+	    print(fileID,'  <ViewRegistration timepoint="0" setup="'+setup_idx+'">\n');
+	    print(fileID,'   <ViewTransform type="affine">\n');
+	    print(fileID,'    <Name>calibration</Name>\n');
+	
+		x = x_locations[position_idx]/lateral_pixel_size;
+		y = y_locations[position_idx]/lateral_pixel_size;
+		z = z_locations[position_idx]/lateral_pixel_size;
+	
+	    print(fileID,'    <affine>1.0 0.0 0.0 '+d2s(x,4)+' 0.0 1.0 0.0 '+d2s(y,4)+' 0.0 0.0 1.0 '+d2s(z,4)+'</affine>\n');
+	    print(fileID,'   </ViewTransform>\n');
+	    
+	    print(fileID,'   <ViewTransform type="affine">\n');
+	    print(fileID,'    <Name>calibration</Name>\n');
+	    print(fileID,'    <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 '+d2s(pixel_ratio,4)+'</affine>\n');
+	    print(fileID,'   </ViewTransform>\n');
+	    print(fileID,'  </ViewRegistration>\n');
+	    setup_idx++;
+	}
 }
-
 print(fileID,' </ViewRegistrations>\n');
+
+// Unused Features
 print(fileID,' <ViewInterestPoints />\n');
 print(fileID,' <BoundingBoxes />\n');
 print(fileID,' <PointSpreadFunctions />\n');
@@ -290,6 +314,8 @@ print(fileID,' <IntensityAdjustments />\n');
 print(fileID,'</SpimData>\n');
 
 File.close(fileID);
+
+/*
 
 // Resave data as a a compressed N5 file.
 run("As N5 ...", 
@@ -392,6 +418,10 @@ for (slice_idx=1; slice_idx<slices+1; slice_idx++) {
 	}
 }
 
-
-
+// Processing Complete
+close("*");
 // eval("script", "System.exit(0);");
+
+/*
+
+ */
