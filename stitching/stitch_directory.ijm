@@ -315,22 +315,21 @@ print(fileID,'</SpimData>\n');
 
 File.close(fileID);
 
-/*
-
-// Resave data as a a compressed N5 file.
-run("As N5 ...", 
-	"select="+data_directory+"dataset.xml" +
-	" resave_angle=[All angles] "+ 
-	"resave_channel=[All channels] "+
-	"resave_illumination=[All illuminations] "+
-	"resave_tile=[All tiles] "+
-	"resave_timepoint=[All Timepoints] "+
-	"compression=[Raw (no compression)] "+
-	"subsampling_factors=[{ {1,1,1}, {2,2,2}, {4,4,4}, {8,8,8} }] "+
-	"n5_block_sizes=[{ {128,128,64}, {128,128,64}, {128,128,64}, {128,128,64} }] "+
-	"output_xml="+data_directory+"dataset-n5.xml "+
-	"output_n5="+data_directory+"dataset.n5 write_xml write_data");
-
+if (!File.exists(data_directory+"dataset-n5.xml);) {
+	// Resave data as a a compressed N5 file.
+	run("As N5 ...", 
+		"select="+data_directory+"dataset.xml" +
+		" resave_angle=[All angles] "+ 
+		"resave_channel=[All channels] "+
+		"resave_illumination=[All illuminations] "+
+		"resave_tile=[All tiles] "+
+		"resave_timepoint=[All Timepoints] "+
+		"compression=[Raw (no compression)] "+
+		"subsampling_factors=[{ {1,1,1}, {2,2,2}, {4,4,4}, {8,8,8} }] "+
+		"n5_block_sizes=[{ {128,128,64}, {128,128,64}, {128,128,64}, {128,128,64} }] "+
+		"output_xml="+data_directory+"dataset-n5.xml "+
+		"output_n5="+data_directory+"dataset.n5 write_xml write_data");
+}
 
 // Calculate Pairwise Shifts
 run("Calculate pairwise shifts ...", 
@@ -420,8 +419,4 @@ for (slice_idx=1; slice_idx<slices+1; slice_idx++) {
 
 // Processing Complete
 close("*");
-// eval("script", "System.exit(0);");
-
-/*
-
- */
+eval("script", "System.exit(0);");
