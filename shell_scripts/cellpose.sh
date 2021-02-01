@@ -7,7 +7,7 @@ source activate cellpose
 # Specify Directory
 #input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/mutant/"
 #diameter=30 
-input_directory="/home2/kdean/Desktop/fish5_cancercells_070819_3"
+input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/mutant"
 diameter=25
 
 # Clear PyTorch Memory

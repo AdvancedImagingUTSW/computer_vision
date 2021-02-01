@@ -1,7 +1,7 @@
 // Load CLIJ Extensions
 run("CLIJ2 Macro Extensions", "cl_device=[Tesla V100-PCIE-32GB]");
 
-for (image_idx = 1; image_idx < 52; image_idx++) {
+for (image_idx = 35; image_idx < 52; image_idx++) {
 
 	// Specify Data Location
 	image_number=IJ.pad(image_idx, 6);
@@ -106,5 +106,4 @@ for (image_idx = 1; image_idx < 52; image_idx++) {
 	export_name = substring(image_name, 0, indexOf(image_name, ".tif"))+"_branch_info.csv";
 	saveAs("Results", data_path+export_name);
 	run("Close All");
-
 }
