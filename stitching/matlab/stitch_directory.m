@@ -18,7 +18,7 @@ elseif isunix
     
     if(total_memory<220)
         disp('Not Enough Memory- Please Launch a 256GB Web Visualization Node on BioHPC');
-        return
+%         return
     else
         %% Determine Number of Positions, Channels, and the Type of Image
         cd(data_directory);

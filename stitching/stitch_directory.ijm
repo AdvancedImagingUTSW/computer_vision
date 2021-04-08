@@ -1,4 +1,4 @@
-data_directory = '/archive/MIL/dean/test';
+data_directory = '/archive/MIL/cajal/C0027-L/A0010-RFP/210326/Cell10';
 downsampling_factor = 16;
 verbose = 0;
 
@@ -315,21 +315,22 @@ print(fileID,'</SpimData>\n');
 
 File.close(fileID);
 
-if (!File.exists(data_directory+"dataset-n5.xml);) {
-	// Resave data as a a compressed N5 file.
-	run("As N5 ...", 
-		"select="+data_directory+"dataset.xml" +
-		" resave_angle=[All angles] "+ 
-		"resave_channel=[All channels] "+
-		"resave_illumination=[All illuminations] "+
-		"resave_tile=[All tiles] "+
-		"resave_timepoint=[All Timepoints] "+
-		"compression=[Raw (no compression)] "+
-		"subsampling_factors=[{ {1,1,1}, {2,2,2}, {4,4,4}, {8,8,8} }] "+
-		"n5_block_sizes=[{ {128,128,64}, {128,128,64}, {128,128,64}, {128,128,64} }] "+
-		"output_xml="+data_directory+"dataset-n5.xml "+
-		"output_n5="+data_directory+"dataset.n5 write_xml write_data");
-}
+// if (File.exists(data_directory+'dataset.xml')) {
+
+// Save data as an N5 file.
+run("As N5 ...",
+	"select="+data_directory+"dataset.xml" +
+	" resave_angle=[All angles]"+ 
+	" resave_channel=[All channels]"+
+	" resave_illumination=[All illuminations]"+
+	" resave_tile=[All tiles]"+
+	" resave_timepoint=[All Timepoints]"+
+	" compression=[Raw (no compression)]"+
+	" subsampling_factors=[{ {1,1,1}, {2,2,2}, {4,4,4}, {8,8,8} }]"+
+	" n5_block_sizes=[{ {128,128,64}, {128,128,64}, {128,128,64}, {128,128,64} }]"+
+	" output_xml="+data_directory+"dataset-n5.xml"+
+	" output_n5="+data_directory+"dataset.n5 write_xml write_data");
+
 
 // Calculate Pairwise Shifts
 run("Calculate pairwise shifts ...", 
@@ -381,7 +382,7 @@ save_directory = data_directory + "fused_"+downsampling_factor+"x_downsampled";
 if (!endsWith(save_directory, File.separator)) {
 		save_directory = save_directory + File.separator;
 }
-File.makeDirectory(save_directory)
+File.makeDirectory(save_directory);
 
 // Fuse the Dataset
 run("Fuse dataset ...", 
