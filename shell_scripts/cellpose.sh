@@ -8,8 +8,10 @@ source activate cellpose
 #input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/mutant/"
 #diameter=30 
 # input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/wt"
-input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/wt/"
-diameter=30
+# input_directory="/archive/MIL/marciano/20201211_CapillaryLooping/cropped/wt/"
+# diameter=30
+input_directory="/home2/kdean/Desktop/cellpose/"
+diameter=70;
 
 # Clear PyTorch Memory
 python -c "import torch; torch.cuda.empty_cache(); print('Done Emptying Cache')"
