@@ -1,0 +1,20 @@
+# Import Modules
+import os
+import time
+from multiprocessing import Pool
+
+import numpy as np
+from tifffile import imread, imsave
+
+from skimage.filters import threshold_otsu
+from skimage.morphology import dilation, erosion, remove_small_objects
+from skimage.measure import label, regionprops
+
+from scipy.ndimage import gaussian_filter, binary_fill_holes
+from scipy import ndimage, signal
+
+if 'BINDER_SERVICE_HOST' in os.environ:
+    os.environ['DISPLAY'] = ':1.0'
+    
+import napari
+
