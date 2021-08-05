@@ -1,4 +1,4 @@
-function perform_cell_segmentation(MD)
+function perform_cell_segmentation(MD, cell_channel)
 % Step 1 - Add Segmentation Package
 segmentation_package_idx = MD.getPackageIndex('SegmentationPackage');
 if(isempty(segmentation_package_idx))
@@ -12,7 +12,7 @@ end
 
 %% Threshold Process
 funParams = ThresholdProcess.getDefaultParams(MD);
-funParams.ChannelIndex = 1;
+funParams.ChannelIndex = cell_channel;
 funParams.GaussFilterSigma = 1;
 funParams.MethodIndx = 3;
 funParams.MaxJump = 0;
@@ -35,7 +35,7 @@ MD.processes_{threshold_process_idx}.run();
 %% Mask Refinement Process
 funParams = MaskRefinementProcess.getDefaultParams(MD);
 SegProcessIndex = 4;
-funParams.ChannelIndex = 1;
+funParams.ChannelIndex = cell_channel;
 funParams.MaskCleanUp = 1;
 funParams.MinimumSize = 100;
 funParams.ClosureRadius = 3;

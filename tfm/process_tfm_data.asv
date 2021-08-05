@@ -6,13 +6,13 @@ calculate_displacement=0;
 calculate_force_field = 0;
 correct_displacement=0;
 segment_cell=0;
-create_overlay_image=1;
-view_results=0;
+create_overlay_image=0;
+view_results=01
 cell_channel = 2;
 bead_channel = 1;
 
 %% Load the MovieList and MovieData
-ML=MovieList.loadMatFile('/archive/MIL/baker/220625_TFM_8kPa/wildtype/Analysis/movieList.mat');
+ML=MovieList.loadMatFile('/archive/MIL/baker/220625_TFM_8kPa/mutant/Analysis/movieList.mat');
 MD=MovieData.loadMatFile(ML.movieDataFile_{cell_idx});
 disp(['Processing Cell = ' num2str(cell_idx)]);
 

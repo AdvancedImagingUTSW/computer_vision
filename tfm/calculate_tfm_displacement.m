@@ -1,4 +1,4 @@
-function calculate_tfm_displacement(ML, MD, cell_idx)
+function calculate_tfm_displacement(ML, MD, cell_idx, bead_channel)
 
 %% Specify Reference Image
 reference_framePath=strrep(ML.movieDataFile_{cell_idx}, 'Analysis/movieData.mat', 'ref');
@@ -8,7 +8,7 @@ reference_framePath = [reference_framePath filesep directory_contents(3).name];
 
 %%
 funParams = DisplacementFieldCalculationProcess.getDefaultParams(MD);
-funParams.ChannelIndex = 2; % KFs are C1, beads are C2
+funParams.ChannelIndex = bead_channel; 
 funParams.referenceFramePath = reference_framePath;
 funParams.minCorLength = 20;
 funParams.maxFlowSpeed = 50;
