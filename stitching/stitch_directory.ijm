@@ -1,4 +1,4 @@
-data_directory = '/archive/MIL/cajal/C0027-L/A0010-RFP/210326/Cell10';
+data_directory = '/archive/MIL/ripla/Uterus/561/210804/Cell1/';
 downsampling_factor = 16;
 verbose = 0;
 
