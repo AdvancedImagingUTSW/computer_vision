@@ -9,7 +9,7 @@ module load parallel/20150122
 cd /archive/MIL/;
 
 # Change the Permissions
-ls . | parallel --will-cite chmod -R 775 {};
+#ls . | parallel --will-cite chmod -R 775 {};
 
 # Change the Group Ownership
 find . -maxdepth 5 -gid 2020 -type d -print | parallel --will-cite chgrp -Rv MIL {}

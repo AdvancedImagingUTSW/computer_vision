@@ -1,7 +1,7 @@
 function generate_image_locations_file(data_directory, number_of_positions, number_of_channels)
 % CURRENTLY ASSUMES SINGLE TIMEPOINT.
 
-fileID = fopen('imageLocations.txt','wt');
+fileID = fopen(fullfile(data_directory,'imageLocations.txt'),'wt');
 fprintf(fileID,'dim=3');
 fprintf(fileID,'\n');
 counter=0;
